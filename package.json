@@ -1,0 +1,25 @@
+{
+  "name":               "ragent-console",
+  "version":            "1.0.0",
+  "description":        "ragent for console messages",
+  "author":             "pmuellr",
+  "scripts": {
+    "cake":             "cake",
+    "watch":            "cake watch"
+  },
+  "homepage":           "https://github.com/ragents/ragent-console",
+  "license":            "Apache-2.0",
+  "repository": {
+    "type":             "git",
+    "url" :             "https://github.com/ragents/ragent-console.git"
+  },
+  "dependencies": {
+    "ragents":          "1.0.x",
+    "debug":            "2.1.x"
+  },
+  "devDependencies": {
+    "chalk":            "1.0.x",
+    "cakex":            "0.1.x",
+    "coffee-script":    "1.9.x"
+  }
+}
