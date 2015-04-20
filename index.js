@@ -35,8 +35,14 @@ function attach(cb) {
     })
 
     var agentInfo = {
-      name: "ragent-console",
-      title: process.argv.join(" ")
+      name: "ragent-console"
+    }
+
+    if (process.browser) {
+      agentInfo.title = location.href
+    }
+    else {
+      agentInfo.title = process.argv.join(" ")
     }
 
     session.createAgent(agentInfo, agentCreated)

@@ -1,0 +1,52 @@
+check the console, and also the
+<a href="https://fragents-pjm.mybluemix.net/">ragents server</a>
+for messages
+
+<script src="ragent-console.js"></script>
+<script>
+localStorage.RAGENTS_URL = "wss://fragents-pjm.mybluemix.net#6443293271586299"
+
+//------------------------------------------------------------------------------
+function main() {
+  ragentConsole.attach(attached)
+}
+
+//------------------------------------------------------------------------------
+function attached(err) {
+  if (err) {
+    log(err)
+    process.exit(1)
+  }
+
+  log("attached to ragents server")
+
+  // from here on, messages sent to console AND as ragents events
+  ragentConsole.install()
+
+  every(2000, doLog)
+  every(3000, doInfo)
+  every(4000, doWarn)
+  every(5000, doError)
+}
+
+//------------------------------------------------------------------------------
+function every(ms, fn) {
+  setInterval(fn, ms)
+}
+
+//------------------------------------------------------------------------------
+var lCounter = 0, iCounter = 0, wCounter = 0, eCounter = 0
+
+function doLog()   { console.log(  "message type: log",   lCounter++) }
+function doInfo()  { console.info( "message type: info",  iCounter++) }
+function doWarn()  { console.warn( "message type: warn",  wCounter++) }
+function doError() { console.error("message type: error", eCounter++) }
+
+//------------------------------------------------------------------------------
+function log(message) {
+  console.log(message)
+}
+
+//------------------------------------------------------------------------------
+main()
+</script>
