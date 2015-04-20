@@ -1,5 +1,13 @@
 /* Licensed under the Apache License. See footer for details. */
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none;
+}
+
+.message-log   {color: #00F; }
+.message-info  {color: #0A0; }
+.message-warn  {color: #CC0; }
+.message-error {color: #F00; }
 
 /*
 //==============================================================================

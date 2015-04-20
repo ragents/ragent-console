@@ -1,113 +1,104 @@
 // Licensed under the Apache License. See footer for details.
 
 var app = angular.module("app", [])
-
 app.controller("BodyController", BodyController)
-
-ConsoleAgents = []
 
 //------------------------------------------------------------------------------
 function BodyController($scope) {
-  disconnected($scope, false)
-  restoreFromLocalStorage($scope)
+  $scope.ragentsURL    = getRagentsURL()
+  $scope.messages      = []
+  $scope.connect       = connect
+  $scope.clearMessages = clearMessages
 
-  $scope.connect = connect
+  disconnected($scope)
+
+  $scope.connect()
 
   //-----------------------------------
   function connect() {
-    saveToLocalStorage($scope)
-
     var config = {
-      url: $scope.serverUrl,
-      key: $scope.sessionKey
+      url: $scope.ragentsURL,
+      key: "anonymous"
+    }
+
+    var match = $scope.ragentsURL.match(/(.*?)#(.*)/)
+    if (match) {
+      config.url = match[1]
+      config.key = match[2]
     }
 
     ragents.createSession(config, sessionCreated)
   }
 
   //-----------------------------------
-  function sessionCreated(err, session) {
-    if (err) return alert("error creating session: " + err)
-
-    RagentsSession = session
-
-    session.on("close", function() {
-      RagentsSession = null
-    })
-
-    session.on("close", function() {
-      RagentsSession = null
-    })
-
-    session.on("ragentCreated", function(ragent) {
-      if (ragent.name != "ragent-console") return
-    })
-
-    session.getRemoteAgents(function(err, ragents) {
-      for (var i=0; i<ragents.length; i++) {
-        if (ragent.name != "ragent-console") continue
-
-        ragent.on()
-      }
-    })
-
+  function clearMessages() {
+    $scope.messages = []
   }
 
   //-----------------------------------
-  function attached(err) {
-    if (err) {
-      alert("error attaching to ragents server: " + err)
-      return
+  function sessionCreated(err, session) {
+    if (err) return alert("error creating session: " + err)
+
+    connected($scope)
+
+    session.on("ragentCreated", ragentCreated)
+
+    session.getRemoteAgents(function(err, ragents) {
+      for (var i=0; i<ragents.length; i++) {
+        ragentCreated(ragents[i])
+      }
+    })
+  }
+
+  //-----------------------------------
+  function ragentCreated(ragent) {
+    if (ragent.info.name != "ragent-console") return
+
+    ragent.on("console", onConsole(ragent.info.id))
+  }
+
+  //-----------------------------------
+  function onConsole(ragentID) {
+    return function (event) {
+      $scope.messages.push({
+        rid: ragentID,
+        cls: "message-" + event.type,
+        txt: event.message
+      })
+      $scope.$apply()
     }
-
-    connected($scope, true)
   }
-
-}
-
-function addConsoleRAgent(ragent) {
-  for (var i=0; i<ConsoleAgents.length; i++) {
-    if (ragent.info.id == ConsoleAgents[i].info.id) return
-  }
-
-  ConsoleAgents.push(ragent)
-}
-
-function delConsoleRAgent(ragent) {
-  ConsoleAgents
 }
 
 //------------------------------------------------------------------------------
-function connected($scope, apply) {
+function connected($scope) {
   $scope.connectedLabel      = "connected"
   $scope.connectedLabelClass = "label label-success"
 
-  if (!apply) return
-  $scope.$apply()
+  try {
+    $scope.$apply()
+  }
+  catch (e) {
+  }
 }
 
 //------------------------------------------------------------------------------
-function disconnected($scope, apply) {
+function disconnected($scope) {
   $scope.connectedLabel      = "not connected"
   $scope.connectedLabelClass = "label label-danger"
 
-  if (!apply) return
-  $scope.$apply()
+  try {
+    $scope.$apply()
+  }
+  catch (e) {
+  }
 }
 
 //------------------------------------------------------------------------------
-function restoreFromLocalStorage($scope) {
-  $scope.serverUrl  = window.localStorage.serverUrl  || ""
-  $scope.sessionKey = window.localStorage.sessionKey || ""
-}
+function getRagentsURL($scope) {
+  if (!location.hash || location.hash == "") return prompt("enter a ragents session URL")
 
-//------------------------------------------------------------------------------
-function saveToLocalStorage($scope) {
-  if (!$scope.serverUrl) return
-  if (!$scope.sessionKey) return
-
-  window.localStorage.serverUrl  = $scope.serverUrl
-  window.localStorage.sessionKey = $scope.sessionKey
+  return location.hash.substring(1)
 }
 
 //------------------------------------------------------------------------------
