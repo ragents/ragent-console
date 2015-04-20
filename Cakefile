@@ -17,6 +17,9 @@ mkdir "-p", "tmp"
 
 #-------------------------------------------------------------------------------
 taskBuild = ->
+  cp "-f", "node_modules/ragents/www/ragents-browser.js",          "www/scripts"
+  cp "-f", "node_modules/ragents/www/ragents-browser.js.map.json", "www/scripts"
+
   browserifyOpts = [
     "index.js"
     "--outfile tmp/ragent-console.js"

@@ -5675,7 +5675,7 @@ module.exports={
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ragents/ragents.git"
+    "url": "git+https://github.com/ragents/ragents.git"
   },
   "dependencies": {
     "underscore": "1.7.x",

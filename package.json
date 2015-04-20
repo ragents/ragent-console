@@ -18,6 +18,8 @@
     "debug":            "2.1.x"
   },
   "devDependencies": {
+    "browserify":       "9.0.x",
+    "cat-source-map":   "0.1.x",
     "chalk":            "1.0.x",
     "cakex":            "0.1.x",
     "coffee-script":    "1.9.x"
